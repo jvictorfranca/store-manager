@@ -3,8 +3,9 @@ const QUANTITY_MINIMUM_ERROR = '"quantity" must be larger than or equal to 1';
 const PRODUCT_EXISTS_ERROR = 'Product already exists';
 const NUMBER_NOT_STRING_ERROR = '"quantity" must be a number';
 const INVALID_DATA = 'invalid_data';
+const WRONG_ID_FORMAT = 'Wrong id format';
 
-const { create, findByName } = require('../models/products.model');
+const { create, find, findByName, findProductById } = require('../models/products.model');
 
 const nameExists = async (name) => {
   const product = await findByName(name);
@@ -37,6 +38,20 @@ const createProduct = async (name, quantity) => {
   };
 };
 
+const findAllProducts = async () => {
+  const products = await find();
+  return { products };
+};
+
+const findProductByIdService = async (id) => {
+  const product = await findProductById(id);
+  if (!product) return (null);
+  if (product.status) return errorObjectCreator(422, INVALID_DATA, WRONG_ID_FORMAT);
+  return { ...product };
+};
+
 module.exports = {
   createProduct,
+  findAllProducts,
+  findProductByIdService,
 };
