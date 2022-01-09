@@ -3,6 +3,7 @@ const {
   createProductController,
   findAllProductsController,
   findProductByIdController,
+  updateProductByIdController,
   } = require('./controllers/products.controller');
 
 const PORT = 3000;
@@ -19,5 +20,6 @@ app.get('/', (_request, response) => {
 app.get('/products', findAllProductsController);
 app.get('/products/:id', findProductByIdController);
 app.post('/products', createProductController);
+app.put('/products/:id', updateProductByIdController);
 
 app.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));

@@ -5,7 +5,8 @@ const NUMBER_NOT_STRING_ERROR = '"quantity" must be a number';
 const INVALID_DATA = 'invalid_data';
 const WRONG_ID_FORMAT = 'Wrong id format';
 
-const { create, find, findByName, findProductById } = require('../models/products.model');
+const { 
+  create, find, findByName, findProductById, updateById } = require('../models/products.model');
 
 const nameExists = async (name) => {
   const product = await findByName(name);
@@ -50,8 +51,27 @@ const findProductByIdService = async (id) => {
   return { ...product };
 };
 
+const updateProductByIdService = async (id, name, quantity) => {
+  if (name.length < 5) {
+    return errorObjectCreator(422, INVALID_DATA, NAME_LENGTH_ERROR);
+   } if (typeof quantity !== 'number') {
+     return errorObjectCreator(422, INVALID_DATA, NUMBER_NOT_STRING_ERROR);
+   }
+    if (quantity < 1) {
+    return errorObjectCreator(422, INVALID_DATA, QUANTITY_MINIMUM_ERROR);
+   } if (await nameExists(name)) {
+     return errorObjectCreator(422, INVALID_DATA, PRODUCT_EXISTS_ERROR);
+    } await updateById(id, name, quantity);
+     const createdProduct = {
+       _id: id, name, quantity,
+     };
+     return { answer: createdProduct, status: 200,
+     };
+};
+
 module.exports = {
   createProduct,
   findAllProducts,
   findProductByIdService,
+  updateProductByIdService,
 };
