@@ -36,8 +36,18 @@ const updateById = async (id, name, quantity) => {
   const conn = await connect();
   const { insertedId } = await
    conn.collection('products').updateOne({ _id: ObjectId(id) }, { $set: { name, quantity } });
-   console.log(insertedId);
   return insertedId;
+};
+
+const deleteById = async (id) => {
+  const conn = await connect();
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return { status: 422 }; 
+}
+  const product = await conn.collection('products').findOne(ObjectId(id));
+  if (!product) return null;
+  conn.collection('products').deleteOne({ _id: ObjectId(id) });
+  return product;
 };
 
 module.exports = {
@@ -46,4 +56,5 @@ module.exports = {
   findByName,
   findProductById,
   updateById,
+  deleteById,
 };

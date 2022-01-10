@@ -6,10 +6,22 @@ const INVALID_DATA = 'invalid_data';
 const WRONG_ID_FORMAT = 'Wrong id format';
 
 const { 
-  create, find, findByName, findProductById, updateById } = require('../models/products.model');
+  create,
+  find,
+  findByName,
+  findProductById,
+  updateById,
+  deleteById,
+ } = require('../models/products.model');
 
 const nameExists = async (name) => {
   const product = await findByName(name);
+  if (product) return true;
+  return false;
+};
+
+const idExists = async (id) => {
+  const product = await findProductById(id);
   if (product) return true;
   return false;
 };
@@ -69,9 +81,22 @@ const updateProductByIdService = async (id, name, quantity) => {
      };
 };
 
+const deleteProductByIdService = async (id) => {
+  if (!(await idExists(id))) {
+    return errorObjectCreator(422, INVALID_DATA, WRONG_ID_FORMAT); 
+}
+  const product = await findProductById(id);
+  if (!product) return (null);
+  if (product.status) return errorObjectCreator(422, INVALID_DATA, WRONG_ID_FORMAT);
+  await deleteById(id);
+     return { answer: { ...product }, status: 200,
+     };
+};
+
 module.exports = {
   createProduct,
   findAllProducts,
   findProductByIdService,
   updateProductByIdService,
+  deleteProductByIdService,
 };
