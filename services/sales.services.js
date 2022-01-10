@@ -1,4 +1,4 @@
-const { create, find, findSaleById } = require('../models/sales.model');
+const { create, find, findSaleById, updateById } = require('../models/sales.model');
 
 const INVALID_DATA = 'invalid_data';
 const NOT_FOUND = 'not_found';
@@ -58,8 +58,24 @@ const findSaleByIdService = async (id) => {
   return { ...sale };
 };
 
+const updateSaleByIdService = async (id, salesArray) => {
+  if (isQuantityInvalid(salesArray)) {
+    return errorObjectCreator(422, INVALID_DATA, WRONG_ID_QUANTITY);
+   }
+      const insertedId = await updateById(id, salesArray);
+      if (!insertedId) return errorObjectCreator(404, NOT_FOUND, SALE_NOT_FOUND);
+      
+     const createdProduct = {
+       _id: id,
+       itensSold: salesArray,
+     };
+     return { answer: createdProduct, status: 200,
+     };
+};
+
 module.exports = {
   createSales,
   findSaleByIdService,
   findAllSales,
+  updateSaleByIdService,
 };

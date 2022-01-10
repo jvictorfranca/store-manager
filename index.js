@@ -9,7 +9,8 @@ const {
 const {
   createSaleController,
   findAllSalesController,
-  findSaleByIdController, 
+  findSaleByIdController,
+  updateSaleByIdController, 
 } = require('./controllers/sales.controller');
 
 const PORT = 3000;
@@ -32,5 +33,6 @@ app.delete('/products/:id', deleteProductByIdController);
 app.get('/sales', findAllSalesController);
 app.get('/sales/:id', findSaleByIdController);
 app.post('/sales', createSaleController);
+app.put('/sales/:id', updateSaleByIdController);
 
 app.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));

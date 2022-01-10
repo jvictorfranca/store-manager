@@ -1,5 +1,5 @@
-// const Mongoose = require('mongoose');
-// const { ObjectId } = require('mongodb');
+const Mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
 const connect = require('./connection');
 
 const create = async (salesArray) => {
@@ -17,16 +17,29 @@ const find = async () => {
 
 const findSaleById = async (id) => {
   const conn = await connect();
-//   if (!Mongoose.Types.ObjectId.isValid(id)) {
-//     return { status: 422 }; 
-// }
-  const sale = await conn.collection('sales').findOne({ _id: id });
+  if (!Mongoose.Types.ObjectId.isValid(id)) {
+    return null; 
+}
+  const sale = await conn.collection('sales').findOne({ _id: ObjectId(id) });
   if (!sale) return null;
   return sale;
+};
+
+const updateById = async (id, salesArray) => {
+  console.log('hello1');
+  const conn = await connect();
+  if (!Mongoose.Types.ObjectId.isValid(id)) {
+    console.log('hello');
+    return null; 
+}
+   await conn.collection('sales')
+   .updateOne({ _id: ObjectId(id) }, { $set: { itensSold: salesArray } });
+  return id;
 };
 
 module.exports = {
   create,
   find,
   findSaleById,
+  updateById,
 };

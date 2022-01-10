@@ -1,4 +1,9 @@
-const { createSales, findAllSales, findSaleByIdService } = require('../services/sales.services');
+const {
+  createSales,
+  findAllSales,
+  findSaleByIdService,
+  updateSaleByIdService,
+} = require('../services/sales.services');
 
 const createSaleController = async (req, res, _next) => {
   const salesArray = req.body;
@@ -22,8 +27,20 @@ const findSaleByIdController = async (req, res, _next) => {
   return res.status(200).json(sale);
 };
 
+const updateSaleByIdController = async (req, res, _next) => {
+  const { id } = req.params;
+  const salesArray = req.body;
+  const sale = await updateSaleByIdService(id, salesArray);
+  if (!sale) return res.status(400).json({ message: 'Not Found' });
+  if (sale.status) {
+    return res.status(sale.status).json(sale.answer); 
+}
+  return res.status(200).json(sale);
+};
+
 module.exports = {
   createSaleController,
   findSaleByIdController,
   findAllSalesController,
+  updateSaleByIdController,
 };
