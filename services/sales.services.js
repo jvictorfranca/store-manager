@@ -1,7 +1,9 @@
-const { create } = require('../models/sales.model');
+const { create, find, findSaleById } = require('../models/sales.model');
 
 const INVALID_DATA = 'invalid_data';
+const NOT_FOUND = 'not_found';
 const WRONG_ID_QUANTITY = 'Wrong product ID or invalid quantity';
+const SALE_NOT_FOUND = 'Sale not found';
 
 // const nameExists = async (name) => {
 //   const product = await findByName(name);
@@ -44,6 +46,20 @@ const createSales = async (salesArray) => {
   };
 };
 
+const findAllSales = async () => {
+  const sales = await find();
+  return { sales };
+};
+
+const findSaleByIdService = async (id) => {
+  const sale = await findSaleById(id);
+  if (!sale) return errorObjectCreator(404, NOT_FOUND, SALE_NOT_FOUND);
+  if (sale.status) return errorObjectCreator(404, INVALID_DATA, WRONG_ID_QUANTITY);
+  return { ...sale };
+};
+
 module.exports = {
   createSales,
+  findSaleByIdService,
+  findAllSales,
 };
