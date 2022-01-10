@@ -37,9 +37,21 @@ const updateById = async (id, salesArray) => {
   return id;
 };
 
+const deleteById = async (id) => {
+  const conn = await connect();
+  if (!Mongoose.Types.ObjectId.isValid(id)) {
+    return { status: 422 }; 
+}
+  const sale = await conn.collection('sales').findOne({ _id: ObjectId(id) });
+  if (!sale) return null;
+  conn.collection('sales').deleteOne({ _id: ObjectId(id) });
+  return sale;
+};
+
 module.exports = {
   create,
   find,
   findSaleById,
   updateById,
+  deleteById,
 };

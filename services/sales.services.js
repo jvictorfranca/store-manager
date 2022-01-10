@@ -1,9 +1,10 @@
-const { create, find, findSaleById, updateById } = require('../models/sales.model');
+const { create, find, findSaleById, updateById, deleteById } = require('../models/sales.model');
 
 const INVALID_DATA = 'invalid_data';
 const NOT_FOUND = 'not_found';
 const WRONG_ID_QUANTITY = 'Wrong product ID or invalid quantity';
 const SALE_NOT_FOUND = 'Sale not found';
+const WRONG_SALE_ID_FORMAT = 'Wrong sale ID format';
 
 // const nameExists = async (name) => {
 //   const product = await findByName(name);
@@ -73,9 +74,22 @@ const updateSaleByIdService = async (id, salesArray) => {
      };
 };
 
+const deleteSaleByIdService = async (id) => {
+  // if (!(await idExists(id))) {
+  //   return errorObjectCreator(422, INVALID_DATA, WRONG_ID_FORMAT); 
+// }
+  const sale = await findSaleById(id);
+  if (!sale) return errorObjectCreator(422, INVALID_DATA, WRONG_SALE_ID_FORMAT);
+  if (sale.status === 422) return errorObjectCreator(422, INVALID_DATA, WRONG_SALE_ID_FORMAT);
+  await deleteById(id);
+     return { answer: { ...sale }, status: 200,
+     };
+};
+
 module.exports = {
   createSales,
   findSaleByIdService,
   findAllSales,
   updateSaleByIdService,
+  deleteSaleByIdService,
 };
