@@ -13,6 +13,8 @@ const {
   updateSaleByIdController,
   deleteSaletByIdController, 
 } = require('./controllers/sales.controller');
+const { updateProductsWhenDelete } = require('./middlewares/updateProductsWhenDelete');
+const { updateProductsWhenSale } = require('./middlewares/updateProductsWhenSale');
 
 const PORT = 3000;
 
@@ -33,8 +35,8 @@ app.delete('/products/:id', deleteProductByIdController);
 
 app.get('/sales', findAllSalesController);
 app.get('/sales/:id', findSaleByIdController);
-app.post('/sales', createSaleController);
+app.post('/sales', updateProductsWhenSale, createSaleController);
 app.put('/sales/:id', updateSaleByIdController);
-app.delete('/sales/:id', deleteSaletByIdController);
+app.delete('/sales/:id', updateProductsWhenDelete, deleteSaletByIdController);
 
 app.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));
